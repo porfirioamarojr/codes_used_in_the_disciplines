@@ -1,0 +1,13 @@
+É um padrão de relacionamento a codificação entre um conjunto de caracteres com um conjunto de outra
+coisa, por exemplo números ou pulsos elétricos para facilitr o armazenamento de texto em
+computadores a transmissão através de redes de telecomunicação. Campos tipo texto do MySQL, e
+outros SGBDs, têm uma propriedade que definem o conjunto de caracteres válidos naquele campo. Esses
+são os chamados "character set". Existe charset para vários idiomas. O mais usado com o português é o
+"latin1", que inclui todos os nossos caracteres acentuados. Existem também as "collations", que podem ser
+traduzidas por colações ou agrupamentos, para cada um desses charsets. Elas definem as regras para a
+comparação entre caracteres do charset. Há collations para comparar caracteres de diferentes idiomas,
+para ignorar (ou não) letras minúsculas e maiúculas, ou acentuação. O conjunto de caracteres Unicode é o
+mais abrangente. Ele engloba milhares de caracteres conhecidos, de vários idiomas, além de símbolos,
+emoticons, etc. Já o UTF-8 é uma forma prática de se usar o Unicode sem usar tanto espaço de
+armazenamento.
+

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMB</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+
+<body>
+    <div align="center">
+        <div class="column is-one-third" align="center">
+            <label class="label">Nome do Livro</label>
+            <input class="input is-rounded label" placeholder="ex: To Data Bases Enginners" id="nomebox" type="text"></input><br>
+
+            <label class="label">ID</label>
+            <input class="input is-rounded label" placeholder="ex: 123" id="idbox" type="text"></input><br>
+
+            <label class="label">Autor</label>
+            <input class="input is-rounded label" placeholder="ex: Taciano" id="autorbox" type="text"></input><br>
+
+            <label class="label">Descrição</label>
+            <input class="input is-rounded label" placeholder="ex: Técnicas avançadas de banco de dados." id="descbox" type="text"></input><br>
+
+            <!--<label class="label">Disponibilidade</label>-->
+            <!--<input class="input is-rounded label" placeholder="ex: " id="dispbox" type="text"></input><br>-->
+        </div>
+        <div class="buttons column is-one-fifths" align="center">
+            <button class="button is-success is-rounded" id="insert"><strong>INSERT</strong></button>
+            <button class="button is-info is-rounded" id="select"><strong>SELECT</strong></button>
+            <button class="button is-warning is-rounded" id="update"><strong>UPDATE</strong></button>
+            <button class="button is-danger is-rounded" id="delete"><strong>DELETE</strong></button>
+        </div>
+        <div>
+            <button class="button is-active is-rounded" id="pegarL"><strong>PEGAR LIVRO</strong></button>
+            <button class="button is-active is-rounded" id="devolverL"><strong>DEVOLVER LIVRO</strong></button>
+        </div>
+        <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
+
+        <script id="MainScript">
+            var firebaseConfig = {
+                apiKey: "AIzaSyBDSYBfEAhVwwD8naXDEKGcD5ahJFazoA8",
+                authDomain: "biblioteca-a6c29.firebaseapp.com",
+                databaseURL: "https://biblioteca-a6c29.firebaseio.com",
+                projectId: "biblioteca-a6c29",
+                storageBucket: "biblioteca-a6c29.appspot.com",
+                messagingSenderId: "603928348363",
+                appId: "1:603928348363:web:f6f90187f8f98fc0823d4e"
+            };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var nomeV, idV, autorV, descV, dispV;
+        function Ready(){
+            nomeV = document.getElementById("nomebox").value;
+            idV = document.getElementById("idbox").value;
+            autorV = document.getElementById("autorbox").value;
+            descV = document.getElementById("descbox").value;
+            //dispV = document.getElementById("dispbox").value;
+        }
+        ///insert
+        document.getElementById('insert').onclick = function(){
+            Ready();
+            firebase.database().ref('livro/' + idV).set({
+                nomeDoLivro: nomeV,
+                id: idV,
+                autor: autorV,
+                descricao: descV,
+                disponibilidade: 'disponivel'
+            });
+            alert('Livro Cadastrado')
+        }
+        //select
+        document.getElementById("select").onclick = function(){
+            Ready();
+            firebase.database().ref("livro/"+idV).on('value', function(snapshot){
+                document.getElementById("nomebox").value = snapshot.val().nomeDoLivro;
+                document.getElementById("autorbox").value = snapshot.val().autor;
+                document.getElementById("descbox").value = snapshot.val().descricao;
+                //document.getElementById("dispbox").value = snapshot.val().disponibilidade;
+            });
+        }
+        //update
+        document.getElementById('update').onclick = function(){
+            Ready();
+            firebase.database().ref('livro/' + idV).update({
+                nomeDoLivro: nomeV,
+                id: idV,
+                autor: autorV,
+                descricao: descV,
+                //disponibilidade: dispV
+            });
+            alert('Dados do Livro Atualizados')
+        }
+        //delete
+        document.getElementById('delete').onclick = function(){
+            Ready();
+            firebase.database().ref('livro/' + idV).remove();
+            alert('Livro removido')
+        }
+        //pegar livro
+        document.getElementById("pegarL").onclick = function(){
+            Ready();
+            var verifica
+            firebase.database().ref("livro/"+idV).on('value', function(snapshot){
+                verifica = snapshot.val().disponibilidade;
+            });
+            if (verifica != 'disponivel'){
+                alert('Livro Ocupado');
+            }else{
+                alert('Livro Pego')
+                firebase.database().ref('livro/' + idV).update({
+                disponibilidade: 'ocupado'
+                });
+            }
+        }
+        //devolverlivro
+        document.getElementById("devolverL").onclick = function(){
+            Ready();
+            var verifica
+            firebase.database().ref("livro/"+idV).on('value', function(snapshot){
+                verifica = snapshot.val().disponibilidade;
+            });
+            if (verifica == 'ocupado'){
+                alert('Livro Devolvido');
+                firebase.database().ref('livro/' + idV).update({
+                    disponibilidade: 'disponivel'
+                });
+            }else{
+                alert('Não há o que devolver, o livro está disponível')
+            }
+        }
+    </script>
+
+</body>
+
+</html>
